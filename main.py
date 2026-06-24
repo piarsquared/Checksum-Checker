@@ -38,14 +38,14 @@ def restart_prompt():
 
 def grab_checksum(file_path, mode, silent="n"):
 
-    mode = mode.strip().lower() 
+      mode = mode.strip().lower() 
 
       try:
 
-      with open(file_path, "rb") as f:
-            file_hash = hashlib.new(mode)
-            for chunk in iter(lambda: f.read(4096), b""):
-                  file_hash.update(chunk)
+            with open(file_path, "rb") as f:
+                  file_hash = hashlib.new(mode)
+                  for chunk in iter(lambda: f.read(4096), b""):
+                        file_hash.update(chunk)
     
       except FileNotFoundError:
             print("File not found.")
@@ -60,10 +60,10 @@ def grab_checksum(file_path, mode, silent="n"):
             print("Invalid hashing algorithm.")
             return None
 
-    if silent == "n":
+      if silent == "n":
         print(f"\nYour checksum is: {clean_checksum}\n")
     
-    return clean_checksum
+      return clean_checksum
 
 def clear_term():
       os.system('cls' if os.name == 'nt' else 'clear')

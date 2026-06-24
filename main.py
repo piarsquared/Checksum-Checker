@@ -24,16 +24,41 @@ main_menu = """Please select an option from below to continue.
 
 print(main_menu)
 
+def restart_prompt():
+    choice = input("Would you like to run the program again? (y/n) > ")
+
+    if choice == "y":
+        clear_term()
+        print(logo)
+        print(main_menu)
+    else:
+        clear_term()
+        print("Goodbye.")
+        sys.exit()
+
 def grab_checksum(file_path, mode, silent="n"):
 
     mode = mode.strip().lower() 
+
+      try:
+
+      with open(file_path, "rb") as f:
+            file_hash = hashlib.new(mode)
+            for chunk in iter(lambda: f.read(4096), b""):
+                  file_hash.update(chunk)
     
-    with open(file_path, "rb") as f:
-        file_hash = hashlib.new(mode)
-        for chunk in iter(lambda: f.read(4096), b""):
-            file_hash.update(chunk)
-    
-    clean_checksum = file_hash.hexdigest()
+      except FileNotFoundError:
+            print("File not found.")
+            return None
+
+
+      try:
+
+            clean_checksum = file_hash.hexdigest()
+
+      except ValueError:
+            print("Invalid hashing algorithm.")
+            return None
 
     if silent == "n":
         print(f"\nYour checksum is: {clean_checksum}\n")
@@ -47,7 +72,7 @@ def verify_match():
 
       file_path = input("Please enter the file path of the file > ").strip("'\"")
 
-      mode = input("Please input the alogithm you would like (defaults to sha256) > ")
+      mode = input("Please input the algorithm you would like (defaults to sha256) > ")
 
       checksum = input("Please paste the checksum > ").strip()
 
@@ -58,23 +83,14 @@ def verify_match():
 
       print("")
 
-      if user_checksum == checksum:
+      if user_checksum.lower() == checksum.lower():
             print("Your checksum is valid.")
       else:
             print("These checksums do not match. File may be corrupted.")
 
       print("")
 
-      choice_two = input("Would you like to run the program again? (y/n) > ")
-
-      if choice_two == "y":
-            clear_term()
-            print(logo)
-            print(main_menu)
-      elif choice_two == "n":
-            clear_term()
-            print("Goodbye.")
-            sys.exit()
+      restart_prompt()
 
 def grabber():
       
@@ -87,7 +103,7 @@ def grabber():
 
       grab_checksum(file_path, mode)
 
-      choice_two = input("Would you like to run the program again? (y/n) > ")
+      restart_prompt()
 
       if choice_two == "y":
             clear_term()
